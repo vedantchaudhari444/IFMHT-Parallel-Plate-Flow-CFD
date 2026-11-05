@@ -1,0 +1,4 @@
+Mesh,NominalElementSize_m,Cells,Faces,Nodes,MinimumOrthogonalQuality,MaximumAspectRatio
+Coarse,0.0005,8000,16240,8241,0.999691,1.44151
+Medium,0.00025,32000,64480,32481,0.998463,1.46573
+Fine,0.000125,128000,256960,128961,0.998801,1.45933
