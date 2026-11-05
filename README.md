@@ -4,7 +4,7 @@ A computational fluid dynamics study of low-Reynolds-number flow through a two-d
 
 ## Problem statement
 
-The objective is to model steady, incompressible, laminar flow through a straight channel bounded by two stationary, parallel walls. The numerical velocity profiles are compared with the fully developed analytical solution to assess how mesh resolution and outlet boundary-condition choice affect the predicted flow field. A separate thermal case examines the temperature field when the two walls are maintained at different temperatures.
+The objective is to model steady, incompressible, laminar flow through a straight channel bounded by two stationary, parallel walls. Numerical velocity profiles are compared with the fully developed analytical solution to assess the influence of mesh resolution and outlet boundary-condition choice. A separate thermal case examines the temperature field when the two walls are maintained at different temperatures.
 
 ## Geometry and physical parameters
 
@@ -29,21 +29,21 @@ The thermal extension uses an inlet temperature of 300 K, a lower-wall temperatu
 For fully developed, incompressible, laminar flow between stationary parallel plates, with the transverse coordinate *y* measured from the channel centreline, the streamwise velocity is
 
 \[
- u(y)=\frac{\Delta p}{2\mu L}\left(\frac{H^2}{4}-y^2\right),
- \qquad -\frac{H}{2}\le y\le\frac{H}{2}.
+u(y)=\frac{\Delta p}{2\mu L}\left(\frac{H^2}{4}-y^2\right),
+\qquad -\frac{H}{2}\le y\le\frac{H}{2}.
 \]
 
-The corresponding mean velocity is
+The corresponding mean and maximum velocities are
 
 \[
- U_{\mathrm{mean}}=\frac{\Delta p H^2}{12\mu L},
- \qquad u_{\max}=\frac{3}{2}U_{\mathrm{mean}}.
+U_{\mathrm{mean}}=\frac{\Delta p H^2}{12\mu L},
+\qquad u_{\max}=\frac{3}{2}U_{\mathrm{mean}}.
 \]
 
 The MATLAB post-processing converts between this centreline coordinate and the wall-based coordinate used in the Fluent exports. With *Y* = 0 at the lower wall, the equivalent profile is
 
 \[
- u(Y)=6U_{\mathrm{mean}}\frac{Y}{H}\left(1-\frac{Y}{H}\right).
+u(Y)=6U_{\mathrm{mean}}\frac{Y}{H}\left(1-\frac{Y}{H}\right).
 \]
 
 For the parameters above, the ideal fully developed pressure drop is approximately 9.3636 × 10⁻⁴ Pa.
@@ -79,45 +79,22 @@ The medium mesh has the lowest normalised L₂ velocity error among the three te
 
 For the coarse-mesh scheme comparison, the normalised L₂ errors are 0.13369% for first-order upwind and 0.13334% for second-order upwind. The difference is small for this sampled profile.
 
-The thermal case includes outlet-temperature data, static-temperature contours, and supporting convergence and flow-field images. The repository retains the exported data used by the MATLAB analysis so the reported comparisons can be regenerated.
+## Repository contents
 
-## Visual results
-
-### Mesh resolutions
-
-![Medium mesh](results/mesh/medium_mesh.png)
-
-### Axial velocity field — medium mesh, Pressure Outlet
-
-![Axial velocity contour](results/contours/X_Velocity_medium_P.png)
-
-### Temperature field — thermal case
-
-![Temperature contour](results/contours/static_Temp_medium_P_thermal.png)
-
-## Repository structure
-
-~~~text
-.
-├── README.md
-├── ansys/
-│   └── parallel_plate_channel_flow.wbpz
-├── matlab/
-│   ├── analyse_parallel_plate_flow.m
-│   └── figures_matlab/          # MATLAB .fig and 300 dpi .png outputs
-├── data/                        # Fluent profile exports and CSV summaries
-└── results/
-    ├── mesh/                    # Coarse, medium and fine mesh images
-    ├── contours/                # Velocity, pressure and temperature contours
-    ├── residuals/               # Fluent residual-history images
-    └── animations/              # Flow visualisation video
-~~~
+- `matlab/analyse_parallel_plate_flow.m` — analytical reference, profile comparison, error calculations, and figure generation.
+- `data/*_PO.txt` — Pressure Outlet velocity profiles for the coarse, medium, and fine meshes.
+- `data/*_OF.txt` — Outflow velocity profiles for the coarse, medium, and fine meshes.
+- `data/coarse_PO_1st_order_scheme.txt` — coarse-mesh first-order upwind profile.
+- `data/thermal_outlet_temperature.txt` — thermal-case outlet temperature profile.
+- `data/CFD_Comparison_Summary.csv` — velocity-error summary for the two outlet conditions.
+- `data/Mesh_Statistics.csv` — mesh cell counts and quality metrics.
+- `data/Scheme_Comparison_Summary.csv` — coarse-mesh first- and second-order scheme comparison.
 
 ## Reproducing the MATLAB post-processing
 
 1. Open MATLAB.
 2. Set the **Current Folder** to this repository's `data` directory.
-3. Run the following command in the MATLAB Command Window:
+3. Run this command in the MATLAB Command Window:
 
 ~~~matlab
 run(fullfile('..', 'matlab', 'analyse_parallel_plate_flow.m'))
@@ -125,14 +102,14 @@ run(fullfile('..', 'matlab', 'analyse_parallel_plate_flow.m'))
 
 The script reads the Fluent-exported profile files from the current folder. It regenerates the analytical reference values, pointwise error tables, comparison summaries, mesh statistics, and available plots. New figures are saved to `data/figures_matlab/` as PNG and MATLAB FIG files.
 
-The thermal outlet-temperature and centreline-pressure plots are generated when their corresponding input files are present. The Fluent residual images are retained as solver-output evidence and are not generated by the MATLAB script.
+The thermal outlet-temperature and centreline-pressure plots are generated when their corresponding input files are present. The centreline-pressure export is optional and is not included in the current tracked dataset.
 
 ## Scope and interpretation
 
-- The velocity comparison uses the exported cell-centre samples, not an independently reconstructed continuous CFD field.
+- The velocity comparison uses exported cell-centre samples, not an independently reconstructed continuous CFD field.
 - Error values are specific to the supplied mesh, boundary-condition, and solver data.
 - The non-monotonic error trend means that the finest mesh does not produce the smallest error for every case. No formal Richardson extrapolation or Grid Convergence Index is claimed.
-- The ANSYS Workbench archive is provided as a project package; its internal solver states and compatibility depend on the ANSYS release used to open it.
+- The current Git repository tracks the analysis code and numerical exports. The binary ANSYS Workbench project archive, contour/residual images, MATLAB FIG/PNG outputs, and visualisation video remain in the complete supporting-materials package rather than this Git commit.
 
 ## Software
 
