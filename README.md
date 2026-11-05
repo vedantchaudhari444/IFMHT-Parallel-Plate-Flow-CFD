@@ -102,7 +102,7 @@ run(fullfile('..', 'matlab', 'analyse_parallel_plate_flow.m'))
 
 The script reads the Fluent-exported profile files from the current folder. It regenerates the analytical reference values, pointwise error tables, comparison summaries, mesh statistics, and available plots. New figures are saved to `data/figures_matlab/` as PNG and MATLAB FIG files.
 
-The thermal outlet-temperature and centreline-pressure plots are generated when their corresponding input files are present. The centreline-pressure export is optional and is not included in the current tracked dataset.
+The thermal outlet-temperature and centreline-pressure plots are generated from the tracked exports: `data/thermal_outlet_temperature.txt` and `data/centerline_pressure_medium_PO.txt`.
 
 ## Scope and interpretation
 
